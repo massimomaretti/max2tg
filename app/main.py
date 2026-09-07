@@ -86,7 +86,7 @@ async def main():
     await sender.start()
 
     client = create_max_client(
-        settings.max_token, settings.max_device_id, sender, settings.max_chat_ids,
+        settings.max_token, settings.max_device_id, sender, settings.max_chat_ids, settings.max_sender_ids,
         debug=settings.debug, reply_enabled=settings.reply_enabled, proxy_url=settings.max_proxy,
     )
 
