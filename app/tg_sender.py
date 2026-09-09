@@ -79,7 +79,7 @@ class TelegramSender:
                 await asyncio.sleep(2 * attempt)
         return None
 
-    async def send(self, text: str, reply_markup=None) -> None:
+    async def send(self, text: str, reply_markup=None, is_silent=False) -> None:
         if not text:
             return
 
@@ -92,10 +92,11 @@ class TelegramSender:
                 text=text,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
 
-    async def send_photo(self, data: bytes, caption: str = "", filename: str = "photo.jpg", reply_markup=None) -> None:
+    async def send_photo(self, data: bytes, caption: str = "", filename: str = "photo.jpg", reply_markup=None, is_silent=False) -> None:
         caption = self._truncate_caption(caption)
         await self._retry(
             lambda: self._bot.send_photo(
@@ -104,10 +105,11 @@ class TelegramSender:
                 caption=caption or None,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
 
-    async def send_document(self, data: bytes, caption: str = "", filename: str = "file", reply_markup=None) -> None:
+    async def send_document(self, data: bytes, caption: str = "", filename: str = "file", reply_markup=None, is_silent=False) -> None:
         caption = self._truncate_caption(caption)
         await self._retry(
             lambda: self._bot.send_document(
@@ -116,10 +118,11 @@ class TelegramSender:
                 caption=caption or None,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
 
-    async def send_video(self, data: bytes, caption: str = "", filename: str = "video.mp4", reply_markup=None) -> bool:
+    async def send_video(self, data: bytes, caption: str = "", filename: str = "video.mp4", reply_markup=None, is_silent=False) -> bool:
         caption = self._truncate_caption(caption)
         result = await self._retry(
             lambda: self._bot.send_video(
@@ -128,11 +131,12 @@ class TelegramSender:
                 caption=caption or None,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
         return result is not None
 
-    async def send_voice(self, data: bytes, caption: str = "", reply_markup=None) -> None:
+    async def send_voice(self, data: bytes, caption: str = "", reply_markup=None, is_silent=False) -> None:
         caption = self._truncate_caption(caption)
         result = await self._retry(
             lambda: self._bot.send_voice(
@@ -141,6 +145,7 @@ class TelegramSender:
                 caption=caption or None,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
         if result is None:
@@ -152,19 +157,21 @@ class TelegramSender:
                     caption=caption or None,
                     parse_mode=ParseMode.HTML,
                     reply_markup=reply_markup,
+                    disable_notification=is_silent
                 )
             )
 
-    async def send_sticker(self, data: bytes, reply_markup=None) -> None:
+    async def send_sticker(self, data: bytes, reply_markup=None, is_silent=False) -> None:
         await self._retry(
             lambda: self._bot.send_sticker(
                 chat_id=self._chat_id,
                 sticker=InputFile(io.BytesIO(data), filename="sticker.webp"),
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )
 
-    async def send_poll(self, question: str, options: Sequence[str], reply_markup=None) -> None:
+    async def send_poll(self, question: str, options: Sequence[str], reply_markup=None, is_silent=False) -> None:
         """Send a poll. Caller must ensure at least PollLimit.MIN_OPTION_NUMBER non-empty options."""
         question = self._truncate(question, PollLimit.MAX_QUESTION_LENGTH)
         options = [
@@ -180,5 +187,6 @@ class TelegramSender:
                 is_anonymous=False,
                 allows_multiple_answers=False,
                 reply_markup=reply_markup,
+                disable_notification=is_silent
             )
         )

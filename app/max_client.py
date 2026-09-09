@@ -90,6 +90,7 @@ class MaxMessage:
     link: dict = field(default_factory=dict)
     raw: dict = field(default_factory=dict)
     update_time: Any = None
+    silent: bool = False
 
 
 class MaxClient:
@@ -318,9 +319,9 @@ class MaxClient:
     def process_message(self, payload):
         if self._on_message_cb:
             msg = self._parse_message(payload)
+            msg.silent = not ((not self.sender_ids) or (msg.sender_id in self.sender_ids))
             if (msg is not None
                 and ((not self.chat_ids) or (msg.chat_id in self.chat_ids))
-                and ((not self.sender_ids) or (msg.sender_id in self.sender_ids))
                 and msg.update_time is None):
                 task = asyncio.create_task(self._on_message_cb(msg))
                 task.add_done_callback(_log_task_exception)
