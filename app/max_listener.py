@@ -325,7 +325,7 @@ def create_max_client(
             log.info("Known users: %s", resolver.users)
 
         if not _first_connect:
-            await sender.send("✅ <b>Max:</b> соединение восстановлено", is_silent=True)
+            await sender.send("✅ <b>Max:</b> соединение восстановлено", is_silent=True, is_service=True)
             # After reconnect need to process messages sent in reconnect period, to avoid  messages loss while reconnecting
             chat_ids = client.chat_ids or [*resolver.chats, *resolver.users]
             for chat_id in chat_ids:
@@ -340,7 +340,7 @@ def create_max_client(
                     client.process_message({"message": message, "chatId": chat_id})
         else:
             chat_count = len(resolver.chats)
-            await sender.send(f"✅ <b>Max:</b> подключён | чатов: {chat_count}", is_silent=True)
+            await sender.send(f"✅ <b>Max:</b> подключён", is_silent=True, is_service=True)
         _first_connect = False
 
     @client.on_disconnect
@@ -351,7 +351,7 @@ def create_max_client(
             return
         _notif_count += 1
         _last_notif_time = datetime.now()
-        await sender.send("⚠️ <b>Max:</b> соединение потеряно, переподключение...", is_silent=True)
+        await sender.send("⚠️ <b>Max:</b> соединение потеряно, переподключение...", is_silent=True, is_service=True)
 
     @client.on_message
     async def handle_message(msg: MaxMessage):

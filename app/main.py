@@ -77,6 +77,7 @@ async def main():
     sender = TelegramSender(
         settings.tg_bot_token,
         settings.tg_chat_id,
+        settings.tg_service_chat_id,
         proxy_url=settings.tg_proxy,
         read_timeout=settings.tg_read_timeout,
         write_timeout=settings.tg_write_timeout,

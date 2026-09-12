@@ -10,6 +10,7 @@ class Settings:
     max_device_id: str
     tg_bot_token: str
     tg_chat_id: str
+    tg_service_chat_id: str
     max_chat_ids: str | None = None
     max_sender_ids: str | None = None
     max_proxy: str | None = None
@@ -58,6 +59,7 @@ def load_settings() -> Settings:
         max_device_id=os.environ["MAX_DEVICE_ID"],
         tg_bot_token=os.environ["TG_BOT_TOKEN"],
         tg_chat_id=os.environ["TG_CHAT_ID"],
+        tg_service_chat_id=os.environ["TG_SERVICE_CHAT_ID"],
         max_chat_ids=os.environ.get("MAX_CHAT_IDS") or None,
         max_sender_ids=os.environ.get("MAX_SENDER_IDS") or None,
         max_proxy=max_proxy,

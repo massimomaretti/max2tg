@@ -27,6 +27,7 @@ class TelegramSender:
             self,
             token: str,
             chat_id: str,
+            service_chat_id: str,
             proxy_url: str | None = None,
             read_timeout: int | None = None,
             write_timeout: int | None = None,
@@ -39,6 +40,7 @@ class TelegramSender:
         else:
             self._bot = Bot(token=token, request=request)
         self._chat_id = chat_id
+        self._service_chat_id = service_chat_id
 
     @property
     def bot(self) -> Bot:
@@ -79,7 +81,7 @@ class TelegramSender:
                 await asyncio.sleep(2 * attempt)
         return None
 
-    async def send(self, text: str, reply_markup=None, is_silent=False) -> None:
+    async def send(self, text: str, reply_markup=None, is_silent=False, is_service=False) -> None:
         if not text:
             return
 
@@ -88,7 +90,7 @@ class TelegramSender:
 
         await self._retry(
             lambda: self._bot.send_message(
-                chat_id=self._chat_id,
+                chat_id=self._chat_id if not is_service else self._service_chat_id,
                 text=text,
                 parse_mode=ParseMode.HTML,
                 reply_markup=reply_markup,
